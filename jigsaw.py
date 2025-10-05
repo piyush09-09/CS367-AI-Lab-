@@ -5,9 +5,7 @@ from skimage import io, color
 from skimage.transform import resize
 import matplotlib.pyplot as plt
 
-# -------------------------
 # Load image
-# -------------------------
 image_path = "C:\\Users\\User\\OneDrive\\Desktop\\jigsaw.jpg"
 img = io.imread(image_path)
 if len(img.shape) == 3:
@@ -17,9 +15,7 @@ PATCH_SIZE = 128
 GRID_SIZE = 4
 NUM_PATCHES = GRID_SIZE * GRID_SIZE
 
-# -------------------------
 # Split into patches
-# -------------------------
 def get_patches(image):
     patches = []
     for i in range(GRID_SIZE):
@@ -45,9 +41,7 @@ def reconstruct_image(order, patches):
 
 scrambled_img = reconstruct_image(scrambled_order, patches)
 
-# -------------------------
 # Edge-based scoring function
-# -------------------------
 def edge_score(order, patches):
     score = 0
     grid = [[None]*GRID_SIZE for _ in range(GRID_SIZE)]
@@ -69,9 +63,7 @@ def edge_score(order, patches):
                 score += np.sum(np.abs(patch[-1, :] - bottom_patch[0, :]))
     return score
 
-# -------------------------
 # Simulated Annealing
-# -------------------------
 def simulated_annealing(patches, initial_temp=500, alpha=0.995, iterations=10000):
     current_order = list(range(NUM_PATCHES))
     random.shuffle(current_order)
@@ -100,15 +92,11 @@ def simulated_annealing(patches, initial_temp=500, alpha=0.995, iterations=10000
     
     return best_order, best_score
 
-# -------------------------
 # Solve the puzzle
-# -------------------------
 best_order, best_score = simulated_annealing(patches)
 solved_img = reconstruct_image(best_order, patches)
 
-# -------------------------
 # Show results
-# -------------------------
 plt.figure(figsize=(12,4))
 plt.subplot(1,3,1)
 plt.imshow(img, cmap='gray')
@@ -125,3 +113,4 @@ plt.imshow(solved_img, cmap='gray')
 plt.title(f"Solved Image\nScore: {best_score:.2f}")
 plt.axis('off')
 plt.show()
+
