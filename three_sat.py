@@ -5,9 +5,7 @@ import networkx as nx
 import numpy as np
 import time
 
-# -----------------------------
 # 1. Random k-SAT generator
-# -----------------------------
 def generate_k_sat(k, m, n):
     clauses = []
     for _ in range(m):
@@ -16,9 +14,7 @@ def generate_k_sat(k, m, n):
         clauses.append(clause)
     return clauses
 
-# -----------------------------
 # 2. Evaluation functions
-# -----------------------------
 def clause_satisfied(clause, state):
     for literal in clause:
         var_index = abs(literal) - 1
@@ -31,9 +27,7 @@ def clause_satisfied(clause, state):
 def formula_satisfied(clauses, state):
     return sum(clause_satisfied(c, state) for c in clauses)
 
-# -----------------------------
 # 3. Heuristic functions
-# -----------------------------
 def heuristic_literals_imbalance(clauses, state):
     score = 0
     for clause in clauses:
@@ -54,9 +48,7 @@ def heuristic_clause_weighted(clauses, state):
             score += weight
     return score
 
-# -----------------------------
 # 4. Successor generation
-# -----------------------------
 def flip_one_var(state):
     neighbors = []
     for i in range(len(state)):
@@ -65,9 +57,7 @@ def flip_one_var(state):
         neighbors.append(neighbor)
     return neighbors
 
-# -----------------------------
 # 5. Hill Climbing
-# -----------------------------
 def hill_climb(clauses, n, heuristic, max_iter=1000):
     state = [random.randint(0, 1) for _ in range(n)]
     best_score = heuristic(clauses, state)
@@ -86,9 +76,7 @@ def hill_climb(clauses, n, heuristic, max_iter=1000):
             return True, best_state
     return formula_satisfied(clauses, best_state) == len(clauses), best_state
 
-# -----------------------------
 # 6. Beam Search
-# -----------------------------
 def beam_search(clauses, n, heuristic, beam_width=3, max_iter=500):
     population = [[random.randint(0, 1) for _ in range(n)] for _ in range(beam_width)]
     for _ in range(max_iter):
@@ -111,9 +99,8 @@ def beam_search(clauses, n, heuristic, beam_width=3, max_iter=500):
                 return True, s
     return False, population[0]
 
-# -----------------------------
+
 # 7. Variable Neighborhood Descent
-# -----------------------------
 def vnd(clauses, n, heuristic, max_iter=500):
     state = [random.randint(0, 1) for _ in range(n)]
     best_state = state.copy()
@@ -147,9 +134,7 @@ def vnd(clauses, n, heuristic, max_iter=500):
         if formula_satisfied(clauses, best_state) == len(clauses): return True, best_state
     return formula_satisfied(clauses, best_state) == len(clauses), best_state
 
-# -----------------------------
 # 8. Penetrance calculation
-# -----------------------------
 def compute_penetrance(algorithm, heuristic, k, m, n, trials=20, **kwargs):
     success = 0
     for _ in range(trials):
@@ -158,9 +143,7 @@ def compute_penetrance(algorithm, heuristic, k, m, n, trials=20, **kwargs):
         if solved: success += 1
     return 100 * success / trials
 
-# -----------------------------
 # 12. Runtime calculation
-# -----------------------------
 def compute_penetrance_and_runtime(algorithm, heuristic, k, m, n, trials=10, **kwargs):
     success = 0
     total_time = 0
@@ -174,9 +157,7 @@ def compute_penetrance_and_runtime(algorithm, heuristic, k, m, n, trials=10, **k
     success_rate = 100 * success / trials
     return success_rate, avg_runtime
 
-# -----------------------------
 # 10. Grid/Table visualization of 3-SAT
-# -----------------------------
 def plot_3sat_grid(clauses, n):
     m = len(clauses)
     grid = np.zeros((m, n))
@@ -193,9 +174,7 @@ def plot_3sat_grid(clauses, n):
     plt.title("Random 3-SAT Instance (Grid)")
     plt.show()
 
-# -----------------------------
 # 11. Graph-style visualization of 3-SAT
-# -----------------------------
 def plot_3sat_graph(clauses, n):
     G = nx.Graph()
     for i in range(n): G.add_node(f"x{i+1}", bipartite=0, type="var")
@@ -214,18 +193,14 @@ def plot_3sat_graph(clauses, n):
     plt.title("Random 3-SAT Instance (Graph)")
     plt.show()
 
-# -----------------------------
 # 9. Main experiment + runtime graph
-# -----------------------------
 if __name__ == "__main__":
     random.seed(123)
     test_cases = [(3, 15, 15), (3, 25, 25), (3, 45, 45)]
     heuristics = [("Literals Imbalance", heuristic_literals_imbalance),
                   ("Clause Weighted", heuristic_clause_weighted)]
 
-    # -----------------------------
     # Run experiments and print penetrance
-    # -----------------------------
     print("=== Hill Climbing ===")
     for hname, hfunc in heuristics:
         for k, m, n in test_cases:
@@ -245,9 +220,7 @@ if __name__ == "__main__":
             rate = compute_penetrance(vnd, hfunc, k, m, n)
             print(f"{hname} (m={m}, n={n}): {rate:.1f}%")
 
-    # -----------------------------
     # Demo Visualization
-    # -----------------------------
     print("\n=== Demo Visualization ===")
     k, m, n = 3, 8, 6
     demo_clauses = generate_k_sat(k, m, n)
@@ -256,9 +229,7 @@ if __name__ == "__main__":
     plot_3sat_grid(demo_clauses, n)
     plot_3sat_graph(demo_clauses, n)
 
-    # -----------------------------
     # Average runtime graph
-    # -----------------------------
     print("\n=== Average Runtime Graph ===")
     algorithms = [("Hill Climbing", hill_climb, {}),
                   ("Beam Search (w=3)", beam_search, {"beam_width": 3}),
@@ -283,3 +254,4 @@ if __name__ == "__main__":
     plt.title("Average Runtime Comparison of Search Algorithms")
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.show()
+
