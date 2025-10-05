@@ -3,10 +3,7 @@ import string
 import nltk
 import matplotlib.pyplot as plt
 
-# ===================================================================
 # 1. HELPER FUNCTIONS
-# ===================================================================
-
 def preprocess(text):
     sentences = nltk.sent_tokenize(text)
     normalized_sentences = []
@@ -30,9 +27,7 @@ def levenshtein_distance(s1, s2):
             dp[i][j] = min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost)
     return dp[m][n]
 
-# ===================================================================
 # 2. A* SEARCH ALGORITHM
-# ===================================================================
 
 def a_star_align(doc1_sents, doc2_sents):
     def gap_penalty(sentence):
@@ -40,7 +35,7 @@ def a_star_align(doc1_sents, doc2_sents):
     start_state = (0,0)
     goal_state = (len(doc1_sents), len(doc2_sents))
     def heuristic(i,j):
-        return 0  # Dijkstra-like behavior
+        return 0 
 
     g_start = 0
     h_start = heuristic(0,0)
@@ -60,7 +55,7 @@ def a_star_align(doc1_sents, doc2_sents):
         if current_state == goal_state:
             return path, g_cost
 
-        # --- Generate neighbors ---
+        
         if i < len(doc1_sents) and j < len(doc2_sents):
             align_cost = levenshtein_distance(doc1_sents[i], doc2_sents[j])
             new_path = path + [('align', i, j, align_cost)]
@@ -78,9 +73,8 @@ def a_star_align(doc1_sents, doc2_sents):
 
     return None, float('inf')
 
-# ===================================================================
+
 # 3. VISUALIZATION FUNCTIONS
-# ===================================================================
 
 def visualize_alignment(path, doc1_sents, doc2_sents, name):
     """
@@ -131,9 +125,7 @@ def visualize_total_costs(test_cases):
     plt.title("Comparison of Alignment Costs")
     plt.show()
 
-# ===================================================================
 # 4. ANALYZE AND PRINT RESULTS
-# ===================================================================
 
 def analyze_and_print_results(name, doc1, doc2, plagiarism_threshold=15, visualize=False):
     print(f"\n{'='*20} {name} {'='*20}")
@@ -159,9 +151,7 @@ def analyze_and_print_results(name, doc1, doc2, plagiarism_threshold=15, visuali
     print(f"Total Alignment Cost: {total_cost}")
     return total_cost
 
-# ===================================================================
 # 5. TEST CASES
-# ===================================================================
 
 if __name__ == "__main__":
     
@@ -190,3 +180,4 @@ if __name__ == "__main__":
         results.append((name, cost))
 
     visualize_total_costs(results)
+
